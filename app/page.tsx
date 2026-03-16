@@ -1,84 +1,54 @@
-"use client";
-
-import { useState } from "react";
-
-export default function Home() {
-  const [form, setForm] = useState({
-    name: "",
-    company: "",
-    website: "",
-    industry: "",
-  });
-
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const generateEmail = async () => {
-    setLoading(true);
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    const data = await res.json();
-    setEmail(data.email);
-    setLoading(false);
-  };
-
+export default function Landing() {
   return (
-    <main style={{
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "40px",
-      fontFamily: "Arial",
-      backgroundColor: "#0f172a",
-      color: "white"
-    }}>
-      <h1 style={{ fontSize: "40px", marginBottom: "20px" }}>
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        padding: "40px",
+        fontFamily: "Arial, sans-serif",
+        background: "linear-gradient(to bottom right, #0f172a, #1e293b)",
+        color: "white",
+      }}
+    >
+      <h1 style={{ fontSize: "64px", marginBottom: "20px" }}>
         LeadForge AI
       </h1>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px" }}>
-        <input name="name" placeholder="Name" onChange={handleChange} />
-        <input name="company" placeholder="Company" onChange={handleChange} />
-        <input name="website" placeholder="Website" onChange={handleChange} />
-        <input name="industry" placeholder="Industry" onChange={handleChange} />
+      <p
+        style={{
+          fontSize: "20px",
+          maxWidth: "650px",
+          marginBottom: "40px",
+          color: "#cbd5e1",
+          lineHeight: "1.6",
+        }}
+      >
+        Instantly generate high-converting personalized cold emails using AI.
+        Save time, improve outreach, and scale your business.
+      </p>
 
-        <button
-          onClick={generateEmail}
-          style={{
-            marginTop: "10px",
-            padding: "10px",
-            backgroundColor: "#3b82f6",
-            color: "white",
-            border: "none",
-            cursor: "pointer"
-          }}
-        >
-          {loading ? "Generating..." : "Generate Email"}
-        </button>
-      </div>
-
-      {email && (
-        <pre style={{
-          marginTop: "30px",
-          whiteSpace: "pre-wrap",
-          background: "#1e293b",
-          padding: "20px",
+      <a
+        href="/app"
+        style={{
+          padding: "16px 32px",
+          backgroundColor: "#3b82f6",
+          color: "white",
+          textDecoration: "none",
           borderRadius: "10px",
-          maxWidth: "600px"
-        }}>
-          {email}
-        </pre>
-      )}
+          fontWeight: "bold",
+          fontSize: "18px",
+        }}
+      >
+        Launch App
+      </a>
+
+      <div style={{ marginTop: "60px", color: "#94a3b8", fontSize: "14px" }}>
+        Built with Next.js • Powered by AI
+      </div>
     </main>
   );
 }
