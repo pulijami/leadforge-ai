@@ -3,69 +3,82 @@
 import { useState } from "react";
 
 export default function Home() {
+  const [form, setForm] = useState({
+    name: "",
+    company: "",
+    website: "",
+    industry: "",
+  });
 
-  const [name, setName] = useState("");
-  const [company, setCompany] = useState("");
-  const [website, setWebsite] = useState("");
-  const [industry, setIndustry] = useState("");
-  const [result, setResult] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function generateEmail() {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-    const response = await fetch("/api/generate", {
+  const generateEmail = async () => {
+    setLoading(true);
+    const res = await fetch("/api/generate", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name,
-        company,
-        website,
-        industry
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
     });
 
-    const data = await response.json();
-    setResult(data.email);
-  }
+    const data = await res.json();
+    setEmail(data.email);
+    setLoading(false);
+  };
 
   return (
-    <main style={{maxWidth:600, margin:"40px auto", fontFamily:"Arial"}}>
+    <main style={{
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "40px",
+      fontFamily: "Arial",
+      backgroundColor: "#0f172a",
+      color: "white"
+    }}>
+      <h1 style={{ fontSize: "40px", marginBottom: "20px" }}>
+        LeadForge AI
+      </h1>
 
-      <h1>LeadForge AI</h1>
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px" }}>
+        <input name="name" placeholder="Name" onChange={handleChange} />
+        <input name="company" placeholder="Company" onChange={handleChange} />
+        <input name="website" placeholder="Website" onChange={handleChange} />
+        <input name="industry" placeholder="Industry" onChange={handleChange} />
 
-      <input
-        placeholder="Name"
-        onChange={(e)=>setName(e.target.value)}
-        style={{display:"block", marginBottom:10, width:"100%"}}
-      />
+        <button
+          onClick={generateEmail}
+          style={{
+            marginTop: "10px",
+            padding: "10px",
+            backgroundColor: "#3b82f6",
+            color: "white",
+            border: "none",
+            cursor: "pointer"
+          }}
+        >
+          {loading ? "Generating..." : "Generate Email"}
+        </button>
+      </div>
 
-      <input
-        placeholder="Company"
-        onChange={(e)=>setCompany(e.target.value)}
-        style={{display:"block", marginBottom:10, width:"100%"}}
-      />
-
-      <input
-        placeholder="Website"
-        onChange={(e)=>setWebsite(e.target.value)}
-        style={{display:"block", marginBottom:10, width:"100%"}}
-      />
-
-      <input
-        placeholder="Industry"
-        onChange={(e)=>setIndustry(e.target.value)}
-        style={{display:"block", marginBottom:20, width:"100%"}}
-      />
-
-      <button onClick={generateEmail}>
-        Generate Email
-      </button>
-
-      <pre style={{marginTop:30, whiteSpace:"pre-wrap"}}>
-        {result}
-      </pre>
-
+      {email && (
+        <pre style={{
+          marginTop: "30px",
+          whiteSpace: "pre-wrap",
+          background: "#1e293b",
+          padding: "20px",
+          borderRadius: "10px",
+          maxWidth: "600px"
+        }}>
+          {email}
+        </pre>
+      )}
     </main>
   );
 }
